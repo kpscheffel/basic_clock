@@ -66,8 +66,7 @@ class DrawingClockState extends State<DrawingClock> {
             dateString,
             style: TextStyle(
               fontSize: 24,
-              color: Colors.white
-              fontFamily: ,
+              color: Colors.white,
             )
           ),
         ),
