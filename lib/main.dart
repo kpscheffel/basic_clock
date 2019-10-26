@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "My Clock",
       home: DrawingClock(),
-      //theme: ThemeData(fontFamily: "Raleway"),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
