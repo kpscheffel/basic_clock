@@ -1,8 +1,7 @@
 import 'package:basic_clock/clockface.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:flutter/rendering.dart';
+import 'dart:async';
 
 class DrawingClock extends StatefulWidget {
   @override
@@ -11,7 +10,8 @@ class DrawingClock extends StatefulWidget {
   }
 }
 
-class DrawingClockState extends State<DrawingClock> {
+class DrawingClockState extends State<DrawingClock>
+    with SingleTickerProviderStateMixin {
   Timer timer;
   DateTime timeNow;
   String hourString = '12';
@@ -21,37 +21,59 @@ class DrawingClockState extends State<DrawingClock> {
   int hour;
   int minute;
   int second;
+  double transSecond =0.0;
+  double transMinute =0.0;
+  Animation<double> animationSecond;
+  AnimationController controllerSecond;
 
   @override
   void initState() {
-    timer =
-        new Timer.periodic(Duration(seconds: 1), (Timer t) => updateTime(t));
-    updateTime(timer);
     super.initState();
-  }
+    timeNow = DateTime.now(); 
+    hour = timeNow.hour;
+    minute = timeNow.minute;
+    second = timeNow.second;     
 
-  void updateTime(Timer t) {
-    timeNow = DateTime.now();
-//    print('update time $timeNow');
-    setState(() {
-      hourString = timeNow.hour.toString().padLeft(2, '0');
-      minuteString = timeNow.minute.toString().padLeft(2, '0');
-      secondString = timeNow.second.toString().padLeft(2, '0');
-      dateString = timeNow.day.toString();
-      hour = timeNow.hour;
-      minute = timeNow.minute;
-      second = timeNow.second;
+    controllerSecond = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    controllerSecond.forward();
+
+    controllerSecond.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controllerSecond.reset();
+          //Now get the latest time
+          timeNow = DateTime.now();
+          hourString = timeNow.hour.toString().padLeft(2, '0');
+          minuteString = timeNow.minute.toString().padLeft(2, '0');
+          secondString = timeNow.second.toString().padLeft(2, '0');
+          dateString = timeNow.day.toString();
+          hour = timeNow.hour;
+          minute = timeNow.minute;
+          second = timeNow.second; 
+      } else if (status == AnimationStatus.dismissed) {
+        controllerSecond.forward();
+      }
     });
   }
 
   @override
   void dispose() {
+    controllerSecond.dispose();
     super.dispose();
-    timer.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
+    animationSecond = Tween(begin: 0.0, end: 1.0).animate(controllerSecond)
+      ..addListener(() {
+        setState(() {
+          transSecond = animationSecond.value;
+        });
+      });
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -62,13 +84,11 @@ class DrawingClockState extends State<DrawingClock> {
         Container(
           alignment: Alignment.centerRight,
           padding: EdgeInsets.all(MediaQuery.of(context).size.width / 5),
-          child: Text(
-            dateString,
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-            )
-          ),
+          child: Text(dateString,
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+              )),
         ),
         // Clock at the bottom
         Align(
@@ -88,7 +108,7 @@ class DrawingClockState extends State<DrawingClock> {
         // Actual clock
         CustomPaint(
           size: MediaQuery.of(context).size,
-          painter: ClockFace(hour, minute, second),
+          painter: ClockFace(hour, minute, second, transSecond, 0.0),
         ),
       ]),
     );
