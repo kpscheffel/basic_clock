@@ -1,8 +1,12 @@
 import 'package:basic_clock/pages/drawing_clock.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+    .then((_) {
+      runApp(MyApp());
+    });
 }
 
 class MyApp extends StatelessWidget {
