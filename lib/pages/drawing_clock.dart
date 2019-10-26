@@ -1,4 +1,5 @@
 import 'package:basic_clock/clockface.dart';
+import 'package:basic_clock/pages/configscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
@@ -77,6 +78,15 @@ class DrawingClockState extends State<DrawingClock>
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        actions: [
+          RaisedButton(
+            child: Text('Config'),
+            onPressed: () {  //Navigate to config screen when tapped
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ConfigScreen()),
+              );
+            }
+          ),
+        ],
         title: Text("My Clock"),
       ),
       body: Stack(children: [
