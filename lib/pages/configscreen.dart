@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
-import "dart:async";
-
 
 class ConfigScreen extends StatefulWidget {
   @override
@@ -14,9 +12,8 @@ class ConfigScreenState extends State<ConfigScreen> {
 
   bool _isKeptOn = false;
 
-@override
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initPlatformState();
   }
@@ -59,24 +56,7 @@ class ConfigScreenState extends State<ConfigScreen> {
           _onChanged(newValue);
         },
       )
-      
       ],)
     );
   }
-}
-
-class ScreenValue {
-  bool _value;
-
-  ScreenValue._();
-
-  static Future<ScreenValue> create() async {
-    var result = ScreenValue._();
-    await result._load();
-    return result;
-  }
-  Future<void> _load() async {
-    _value = await Screen.isKeptOn;
-  }
-  bool get value => _value;
 }
