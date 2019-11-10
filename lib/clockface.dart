@@ -73,12 +73,13 @@ class ClockFace extends CustomPainter {
     paint.strokeWidth = 3;
 //    print("transSecond $transSecond");
     double secondRotation = 0.0;
-    if (transSecond > 0.8) { //Create the second hand animation
+//    if (transSecond > 0.8) { //Create the second hand animation
       secondRotation = (second + ((transSecond - 0.8) * 5)) * (2 * pi / 60);
-    }
-    else {
-      secondRotation = (second) * (2 * pi / 60);
-    }
+//    }
+//    else {
+//      secondRotation = (second + transSecond) * (2 * pi / 60);
+      print('transSecond = $transSecond');
+//    }
 
     canvas.drawLine(
         Offset(xMiddle - sin(secondRotation) * diameter * 1 / 5,

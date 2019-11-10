@@ -70,9 +70,12 @@ class DrawingClockState extends State<DrawingClock>
   Widget build(BuildContext context) {
     animationSecond = Tween(begin: 0.0, end: 1.0).animate(controllerSecond)
       ..addListener(() {
-        setState(() {
-          transSecond = animationSecond.value;
-        });
+        //print('animationSecond = $animationSecond');
+        if (animationSecond.value > 0.8) {
+          setState(() {
+            transSecond = animationSecond.value;
+          });
+        }
       });
 
     return Scaffold(
