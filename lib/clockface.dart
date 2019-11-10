@@ -6,14 +6,12 @@ class ClockFace extends CustomPainter {
   int minute;
   int hour;
   double transSecond;
-  double transMinute;
 
-  ClockFace(int _hour, int _minute, int _second, _transSecond, _transMinute) {
+  ClockFace(int _hour, int _minute, int _second, _transSecond) {
     hour = _hour;
     minute = _minute;
     second = _second;
     transSecond = _transSecond;
-    transMinute = _transMinute;
   }
 
   @override
@@ -56,8 +54,8 @@ class ClockFace extends CustomPainter {
     paint.color = Color.fromRGBO(0, 0, 255, 1);
     paint.strokeWidth = 4;
     double minuteRotation = 0;
-    if ((second == 59) & (transSecond > 0.8)) { //Create the minute hand animation
-      minuteRotation = (minute + ((transSecond - 0.8) * 5)) * (2 * pi / 60);
+    if ((second == 59)) { //Create the minute hand animation
+      minuteRotation = (minute + (transSecond * 5)) * (2 * pi / 60);
     }
     else {
       minuteRotation = minute * (2 * pi / 60);
@@ -71,15 +69,8 @@ class ClockFace extends CustomPainter {
     // Second Hand
     paint.color = Colors.red;
     paint.strokeWidth = 3;
-//    print("transSecond $transSecond");
     double secondRotation = 0.0;
-//    if (transSecond > 0.8) { //Create the second hand animation
-      secondRotation = (second + ((transSecond - 0.8) * 5)) * (2 * pi / 60);
-//    }
-//    else {
-//      secondRotation = (second + transSecond) * (2 * pi / 60);
-      print('transSecond = $transSecond');
-//    }
+      secondRotation = (second + (transSecond * 5)) * (2 * pi / 60);
 
     canvas.drawLine(
         Offset(xMiddle - sin(secondRotation) * diameter * 1 / 5,

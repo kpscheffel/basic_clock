@@ -22,61 +22,76 @@ class DrawingClockState extends State<DrawingClock>
   int hour;
   int minute;
   int second;
-  double transSecond =0.0;
-  double transMinute =0.0;
+  //double transSecond =0.0;
+  //double transMinute =0.0;
   Animation<double> animationSecond;
   AnimationController controllerSecond;
 
   @override
   void initState() {
+    //now setup the aninmation events and methods
+    controllerSecond = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    controllerSecond.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        print("Controler AnimationStatus.completed");
+      } else if (status == AnimationStatus.dismissed) {
+        controllerSecond.forward();
+        print("Controler AnimationStatus.dismissed");
+      }
+    });
+
+    timer =
+        new Timer.periodic(Duration(seconds: 1), (Timer t) => updateTime(t));
+    updateTime(timer);
+    loadTime();    
+    animationSecond = Tween(begin: 0.0, end: 0.2).animate(controllerSecond)
+      ..addListener(() {
+        print('animationSecond = $animationSecond');
+          setState(() {
+            //transSecond = animationSecond.value;
+          });
+      });    controllerSecond.forward();
     super.initState();
+  }
+
+  void loadTime() {
     timeNow = DateTime.now(); 
     hour = timeNow.hour;
     minute = timeNow.minute;
     second = timeNow.second;     
+    //Now get the latest time
+    timeNow = DateTime.now();
+    hourString = timeNow.hour.toString().padLeft(2, '0');
+    minuteString = timeNow.minute.toString().padLeft(2, '0');
+    secondString = timeNow.second.toString().padLeft(2, '0');
+    dateString = timeNow.day.toString();
+    hour = timeNow.hour;
+    minute = timeNow.minute;
+    second = timeNow.second; 
+  }
 
-    controllerSecond = AnimationController(
-      duration: Duration(milliseconds: 1000),
-      vsync: this,
-    );
+  void updateTime(Timer t) {
+    loadTime();
+    print("updateTime: $second");
+    //start the aninmation
+    controllerSecond.reset();
 
-    controllerSecond.forward();
-
-    controllerSecond.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        controllerSecond.reset();
-          //Now get the latest time
-          timeNow = DateTime.now();
-          hourString = timeNow.hour.toString().padLeft(2, '0');
-          minuteString = timeNow.minute.toString().padLeft(2, '0');
-          secondString = timeNow.second.toString().padLeft(2, '0');
-          dateString = timeNow.day.toString();
-          hour = timeNow.hour;
-          minute = timeNow.minute;
-          second = timeNow.second; 
-      } else if (status == AnimationStatus.dismissed) {
-        controllerSecond.forward();
-      }
-    });
   }
 
   @override
   void dispose() {
     controllerSecond.dispose();
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    animationSecond = Tween(begin: 0.0, end: 1.0).animate(controllerSecond)
-      ..addListener(() {
-        //print('animationSecond = $animationSecond');
-        if (animationSecond.value > 0.8) {
-          setState(() {
-            transSecond = animationSecond.value;
-          });
-        }
-      });
+
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -109,7 +124,7 @@ class DrawingClockState extends State<DrawingClock>
           child: SizedBox(
             height: 130,
             child: Text(
-              hourString + ":" + minuteString, // + ":" + second,
+              hourString + ":" + minuteString, // + ":" + secondString,
               style: TextStyle(
                 fontSize: 70,
                 color: Colors.white,
@@ -121,7 +136,7 @@ class DrawingClockState extends State<DrawingClock>
         // Actual clock
         CustomPaint(
           size: MediaQuery.of(context).size,
-          painter: ClockFace(hour, minute, second, transSecond, 0.0),
+          painter: ClockFace(hour, minute, second, animationSecond.value),
         ),
       ]),
     );
