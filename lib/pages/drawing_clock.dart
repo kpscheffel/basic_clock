@@ -1,8 +1,10 @@
 import 'package:basic_clock/clockface.dart';
 import 'package:basic_clock/pages/configscreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class DrawingClock extends StatefulWidget {
   @override
@@ -37,10 +39,8 @@ class DrawingClockState extends State<DrawingClock>
 
     controllerSecond.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        print("Controler AnimationStatus.completed");
       } else if (status == AnimationStatus.dismissed) {
         controllerSecond.forward();
-        print("Controler AnimationStatus.dismissed");
       }
     });
 
@@ -50,11 +50,10 @@ class DrawingClockState extends State<DrawingClock>
     loadTime();    
     animationSecond = Tween(begin: 0.0, end: 0.2).animate(controllerSecond)
       ..addListener(() {
-        print('animationSecond = $animationSecond');
           setState(() {
-            //transSecond = animationSecond.value;
           });
-      });    controllerSecond.forward();
+      });    
+    controllerSecond.forward();
     super.initState();
   }
 
@@ -76,7 +75,6 @@ class DrawingClockState extends State<DrawingClock>
 
   void updateTime(Timer t) {
     loadTime();
-    print("updateTime: $second");
     //start the aninmation
     controllerSecond.reset();
 
@@ -93,19 +91,24 @@ class DrawingClockState extends State<DrawingClock>
   Widget build(BuildContext context) {
 
 
-    return Scaffold(
+    return PlatformScaffold(
+      iosContentBottomPadding: false,
+      iosContentPadding: false,
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        actions: [
-          RaisedButton(
-            child: Text('Config'),
+      appBar: PlatformAppBar(
+        trailingActions: [
+          PlatformIconButton(
+            iosIcon: Icon ( CupertinoIcons.info, size: 28.0,),
+            androidIcon: Icon(Icons.info),
+            //icon: Icon(Icons.info),
+            //child: PlatformText('Config'),
             onPressed: () {  //Navigate to config screen when tapped
               Navigator.push(context, MaterialPageRoute(builder: (context) => ConfigScreen()),
               );
             }
           ),
         ],
-        title: Text("My Clock"),
+        title: PlatformText("My Clock"),
       ),
       body: Stack(children: [
         //Date location

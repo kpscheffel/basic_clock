@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class ConfigScreen extends StatefulWidget {
   @override
@@ -9,7 +10,6 @@ class ConfigScreen extends StatefulWidget {
 }
 
 class ConfigScreenState extends State<ConfigScreen> {
-
   bool _isKeptOn = false;
 
   @override
@@ -27,36 +27,51 @@ class ConfigScreenState extends State<ConfigScreen> {
 
   void _onChanged(bool value) {
     setState(() {
-      Screen.keepOn(value);      
+      Screen.keepOn(value);
       _isKeptOn = value;
-    }
-    );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Configure Basic Clock"),
+    return PlatformScaffold(
+      iosContentPadding: true,
+      appBar: PlatformAppBar(
+        title: PlatformText("Configure Basic Clock"),
       ),
-      body: Row(children: <Widget>[
-       Center(
-        child: RaisedButton(
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+/*           PlatformButton(
           onPressed: () {
             //Navigagte back to first route (screen) when tapped
             Navigator.pop(context);
           },
-          child: Text('Go back!') ,
+          child: PlatformText('Go back!') ,
+
           ),
       ),
-      Text("Alway on"),
-      new Switch(
-        value: _isKeptOn,
-        onChanged: (bool newValue) {
-          _onChanged(newValue);
-        },
-      )
-      ],)
+*/
+
+              PlatformText(
+                "Always on",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              new PlatformSwitch(
+                value: _isKeptOn,
+                onChanged: (bool newValue) {
+                  _onChanged(newValue);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
