@@ -125,7 +125,7 @@ class DrawingClockState extends State<DrawingClock>
         Align(
           alignment: Alignment.bottomCenter,
           child: SizedBox(
-            height: 130,
+            height: 120,
             child: Text(
               hourString + ":" + minuteString, // + ":" + secondString,
               style: TextStyle(

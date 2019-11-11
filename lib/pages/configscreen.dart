@@ -59,7 +59,7 @@ class ConfigScreenState extends State<ConfigScreen> {
               PlatformText(
                 "Always on",
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 24,
                 ),
               ),
               new PlatformSwitch(
