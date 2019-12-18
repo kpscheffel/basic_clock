@@ -4,15 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 
 void main() {
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-    .then((_) {
-      runApp(MyApp());
-    });
+    runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+/// blocks rotation; sets orientation to: portrait
+void _portraitModeOnly() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+}
+
+mixin PortraitModeMixin on StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    _portraitModeOnly();
+    return null;
+  }
+}
+
+class MyApp extends StatelessWidget with PortraitModeMixin {
+  const MyApp();
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     Screen.keepOn(true);
     return MaterialApp(
       title: "Basic Clock",
