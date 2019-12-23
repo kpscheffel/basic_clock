@@ -16,6 +16,7 @@ class DrawingClock extends StatefulWidget {
 class DrawingClockState extends State<DrawingClock>
     with SingleTickerProviderStateMixin {
   Timer timer;
+  Timer initTimer; 
   DateTime timeNow;
   String hourString = '12';
   String minuteString = '00';
@@ -24,6 +25,7 @@ class DrawingClockState extends State<DrawingClock>
   int hour;
   int minute;
   int second;
+  int millisecond;
   //double transSecond =0.0;
   //double transMinute =0.0;
   Animation<double> animationSecond;
@@ -44,10 +46,16 @@ class DrawingClockState extends State<DrawingClock>
       }
     });
 
-    timer =
-        new Timer.periodic(Duration(seconds: 1), (Timer t) => updateTime(t));
-    updateTime(timer);
-    loadTime();    
+    loadTime();
+    //Run timer to get to the start of a second   
+//    print("load initial timer for $millisecond wait for  ${1000 - millisecond}");
+    //Adjust start time of tick. If under 100 miliseconds then the time is good.
+    if (millisecond > 100) {
+      initTimer = new Timer.periodic(Duration(milliseconds: 1000 - millisecond), 
+          (Timer t) => updateInitTime(t));
+    } else {
+      new Timer.periodic(Duration(seconds: 1), (Timer t) => updateTime(t));      
+    }
     animationSecond = Tween(begin: 0.0, end: 0.2).animate(controllerSecond)
       ..addListener(() {
           setState(() {
@@ -58,12 +66,14 @@ class DrawingClockState extends State<DrawingClock>
   }
 
   void loadTime() {
+    //Now get the latest time
     timeNow = DateTime.now(); 
     hour = timeNow.hour;
     minute = timeNow.minute;
-    second = timeNow.second;     
-    //Now get the latest time
-    timeNow = DateTime.now();
+    second = timeNow.second;  
+    millisecond = timeNow.millisecond;   
+//    print("Milliseconds = $millisecond");
+//    print("Seconds = $second");
     hourString = timeNow.hour.toString().padLeft(2, '0');
     minuteString = timeNow.minute.toString().padLeft(2, '0');
     secondString = timeNow.second.toString().padLeft(2, '0');
@@ -73,16 +83,25 @@ class DrawingClockState extends State<DrawingClock>
     second = timeNow.second; 
   }
 
+  void updateInitTime(Timer t) {
+    //Setup the minute based timer now that we are at the beinging of a minute
+    initTimer.cancel();
+//    print("should only be called once");
+    new Timer.periodic(Duration(seconds: 1), (Timer t) => updateTime(t));
+    loadTime();    
+  }
+
   void updateTime(Timer t) {
+    //Time should now be accurate, now we can go with one seconds increments.
     loadTime();
     //start the aninmation
     controllerSecond.reset();
-
   }
 
   @override
   void dispose() {
     controllerSecond.dispose();
+    initTimer.cancel();
     timer.cancel();
     super.dispose();
   }

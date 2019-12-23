@@ -45,17 +45,6 @@ class ConfigScreenState extends State<ConfigScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-/*           PlatformButton(
-          onPressed: () {
-            //Navigagte back to first route (screen) when tapped
-            Navigator.pop(context);
-          },
-          child: PlatformText('Go back!') ,
-
-          ),
-      ),
-*/
-
               PlatformText(
                 "Always on",
                 style: TextStyle(
